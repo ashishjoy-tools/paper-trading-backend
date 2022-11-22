@@ -12,6 +12,8 @@ import (
 
 func main() {
 	r := gin.Default()
+	r.Use(routers.CORSMiddleware())
+	
 	redisClient := redis.NewClient(&redis.Options{
 		Addr: os.Getenv("REDIS_CONNECTION_URL"),
 	})
