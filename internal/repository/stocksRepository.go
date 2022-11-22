@@ -10,4 +10,5 @@ type StockRepository interface {
 	SaveStockTradeHistory(symbol string, history []model.StockTradeDetail) error
 	GetStocksGist() ([]model.StockGist, error)
 	AddSymbol(symbol string) error
+	SaveStockGist(gist model.StockGist) error
 }

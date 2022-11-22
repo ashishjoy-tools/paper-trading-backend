@@ -16,6 +16,16 @@ type StockRepositoryRedisImpl struct {
 	redisClient *redis.Client
 }
 
+func (s *StockRepositoryRedisImpl) SaveStockGist(gist model.StockGist) error {
+	ctx, cancelFunc := getContext()
+	defer cancelFunc()
+	bytes, err := json.Marshal(gist)
+	if err != nil {
+		return err
+	}
+	return s.redisClient.Set(ctx, fmt.Sprintf("STOCK_GIST_%s", gist.Symbol), bytes, redis.KeepTTL).Err()
+}
+
 func (s *StockRepositoryRedisImpl) AddSymbol(symbol string) error {
 	ctx, cancelFunc := getContext()
 	defer cancelFunc()

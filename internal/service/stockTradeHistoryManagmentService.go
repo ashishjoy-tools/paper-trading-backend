@@ -55,12 +55,20 @@ func (s *StockTradeHistoryManagementService) fetchStockDetailsFor(symbols []stri
 			details, err := s.stockPriceFetcher.FetchDetailsForSymbol(symbol)
 			if err != nil {
 				fmt.Printf("An error occur while fetching details for symbol: %s\n%v\n", symbol, err)
+				return
 			}
 			history, err := s.stockRepository.GetStockTradeHistory(symbol)
 			mergedDetails := mergeTradeData(details, history)
 			err = s.stockRepository.SaveStockTradeHistory(symbol, mergedDetails)
 			if err != nil {
 				fmt.Printf("An error occur while saving details for symbol: %s\n%v\n", symbol, err)
+				return
+			}
+			stockGist := model.StockGistFrom(mergedDetails, symbol, symbol)
+			err = s.stockRepository.SaveStockGist(stockGist)
+			if err != nil {
+				fmt.Printf("An error occur while saving stock gist for symbol: %s\n%v", symbol, err)
+				return
 			}
 		}(symbol)
 	}
