@@ -1,11 +1,11 @@
 package routers
 
 import (
-	"github.com/ashishkujoy/paper-trading-backend/internal"
+	"github.com/ashishkujoy/paper-trading-backend/internal/service"
 	"github.com/gin-gonic/gin"
 )
 
-func NewStockRoutes(router *gin.Engine, stocksService internal.StockService) *gin.RouterGroup {
+func NewStockRoutes(router *gin.Engine, stocksService service.StockService) *gin.RouterGroup {
 	stocksRouter := router.Group("/stocks")
 	stocksRouter.GET("/:symbol", func(ginCtx *gin.Context) {
 		stocksService.GetBySymbol(ginCtx.Param("symbol"))

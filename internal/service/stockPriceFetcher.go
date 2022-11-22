@@ -1,6 +1,7 @@
-package internal
+package service
 
 import (
+	"github.com/ashishkujoy/paper-trading-backend/internal/model"
 	"io"
 	"net/http"
 	"strings"
@@ -20,8 +21,8 @@ func NewStockPriceFetcher(apiKey, apiHost, serverUrl string) StockPriceFetcher {
 	}
 }
 
-func (s *StockPriceFetcher) FetchDetailsForSymbol(symbol string) (StockPriceResponse, error) {
-	var stockPriceResponse StockPriceResponse
+func (s *StockPriceFetcher) FetchDetailsForSymbol(symbol string) (model.StockPriceResponse, error) {
+	var stockPriceResponse model.StockPriceResponse
 	request, err := http.NewRequest(
 		"GET",
 		strings.Replace(s.serverUrl, "{SYMBOL}", symbol, 1),
@@ -42,5 +43,5 @@ func (s *StockPriceFetcher) FetchDetailsForSymbol(symbol string) (StockPriceResp
 	if err != nil {
 		return stockPriceResponse, err
 	}
-	return ParseStockPriceResponse(body, symbol)
+	return model.ParseStockPriceResponse(body, symbol)
 }

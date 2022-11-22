@@ -2,11 +2,11 @@ package routers
 
 import (
 	"fmt"
-	"github.com/ashishkujoy/paper-trading-backend/internal"
+	"github.com/ashishkujoy/paper-trading-backend/internal/service"
 	"github.com/gin-gonic/gin"
 )
 
-func NewAdminRoutes(router *gin.Engine, adminService *internal.AdminService) *gin.RouterGroup {
+func NewAdminRoutes(router *gin.Engine, adminService *service.AdminService) *gin.RouterGroup {
 	adminApi := router.Group("/admin")
 	adminApi.POST("/update-stocks-trade-detail", func(ginCtx *gin.Context) {
 		go func() {

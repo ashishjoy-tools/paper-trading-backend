@@ -1,9 +1,11 @@
-package internal
+package repository
 
 import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/ashishkujoy/paper-trading-backend/internal"
+	"github.com/ashishkujoy/paper-trading-backend/internal/model"
 	"github.com/go-redis/redis/v9"
 	"time"
 )
@@ -29,8 +31,8 @@ func (s *StockRepositoryRedisImpl) AddSymbol(symbol string) error {
 	return s.redisClient.Set(ctx, "STOCK_SYMBOLS", bytes, redis.KeepTTL).Err()
 }
 
-func (s *StockRepositoryRedisImpl) GetStocksGist() ([]StockGist, error) {
-	stockGists := make([]StockGist, 0)
+func (s *StockRepositoryRedisImpl) GetStocksGist() ([]model.StockGist, error) {
+	stockGists := make([]model.StockGist, 0)
 	ctx, cancelFunc := getContext()
 	defer cancelFunc()
 
@@ -47,7 +49,7 @@ func (s *StockRepositoryRedisImpl) GetStocksGist() ([]StockGist, error) {
 			fmt.Printf("Error while fetching stock gist for %s, %v\n", gistKey, err)
 			continue
 		}
-		var gist StockGist
+		var gist model.StockGist
 		err = json.Unmarshal(bytes, &gist)
 		if err != nil {
 			fmt.Printf("Error while decoding stock gist %s, %v\n", gistKeys, err)
@@ -92,8 +94,8 @@ func (s *StockRepositoryRedisImpl) GetStocksSymbol() ([]string, error) {
 	return symbols, err
 }
 
-func (s *StockRepositoryRedisImpl) GetStockTradeHistory(symbol string) ([]StockTradeDetail, error) {
-	stockTradeDetails := make([]StockTradeDetail, 0)
+func (s *StockRepositoryRedisImpl) GetStockTradeHistory(symbol string) ([]model.StockTradeDetail, error) {
+	stockTradeDetails := make([]model.StockTradeDetail, 0)
 	ctx, cancelFn := getContext()
 	defer cancelFn()
 
@@ -101,7 +103,7 @@ func (s *StockRepositoryRedisImpl) GetStockTradeHistory(symbol string) ([]StockT
 
 	if err != nil {
 		if err == redis.Nil {
-			return stockTradeDetails, &StockTradeDetailsNotPresent{StockSymbol: symbol}
+			return stockTradeDetails, &internal.StockTradeDetailsNotPresent{StockSymbol: symbol}
 		}
 		return stockTradeDetails, err
 	}
@@ -111,7 +113,7 @@ func (s *StockRepositoryRedisImpl) GetStockTradeHistory(symbol string) ([]StockT
 	return stockTradeDetails, err
 }
 
-func (s *StockRepositoryRedisImpl) SaveStockTradeHistory(symbol string, history []StockTradeDetail) error {
+func (s *StockRepositoryRedisImpl) SaveStockTradeHistory(symbol string, history []model.StockTradeDetail) error {
 	ctx, cancelFunc := getContext()
 	defer cancelFunc()
 

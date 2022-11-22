@@ -1,6 +1,8 @@
-package internal
+package model
 
-import "strconv"
+import (
+	"strconv"
+)
 
 type StockGist struct {
 	Symbol                          string  `json:"symbol"`

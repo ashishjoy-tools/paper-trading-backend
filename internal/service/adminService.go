@@ -1,4 +1,4 @@
-package internal
+package service
 
 type AdminService struct {
 	tradeHistoryManager *StockTradeHistoryManagementService

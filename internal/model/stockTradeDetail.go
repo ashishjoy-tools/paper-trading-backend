@@ -1,4 +1,4 @@
-package internal
+package model
 
 type StockTradeDetail struct {
 	Date          string `json:"date"`

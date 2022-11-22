@@ -1,21 +1,23 @@
-package internal
+package service
 
 import (
 	"fmt"
+	"github.com/ashishkujoy/paper-trading-backend/internal/model"
+	"github.com/ashishkujoy/paper-trading-backend/internal/repository"
 	"math"
 	"sync"
 	"time"
 )
 
 type StockTradeHistoryManagementService struct {
-	stockRepository         StockRepository
+	stockRepository         repository.StockRepository
 	batchSize               int
 	delayBetweenBatchUpdate time.Duration
 	stockPriceFetcher       StockPriceFetcher
 }
 
 func NewStockTradeHistoryManagementService(
-	repository StockRepository,
+	repository repository.StockRepository,
 	batchSize int,
 	delayBetweenBatchUpdate time.Duration,
 	fetcher StockPriceFetcher,
@@ -66,9 +68,9 @@ func (s *StockTradeHistoryManagementService) fetchStockDetailsFor(symbols []stri
 	wg.Wait()
 }
 
-func mergeTradeData(details StockPriceResponse, history []StockTradeDetail) []StockTradeDetail {
+func mergeTradeData(details model.StockPriceResponse, history []model.StockTradeDetail) []model.StockTradeDetail {
 	if len(history) == 0 {
-		tradeDetails := make([]StockTradeDetail, len(details.HistoricData))
+		tradeDetails := make([]model.StockTradeDetail, len(details.HistoricData))
 		i := 0
 		for _, v := range details.HistoricData {
 			tradeDetails[i] = v
