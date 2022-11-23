@@ -11,4 +11,5 @@ type StockRepository interface {
 	GetStocksGist() ([]model.StockGist, error)
 	AddSymbol(symbol string) error
 	SaveStockGist(gist model.StockGist) error
+	GetStockCurrentPrice(symbol string) (float64, error)
 }

@@ -16,6 +16,21 @@ type StockRepositoryRedisImpl struct {
 	redisClient *redis.Client
 }
 
+func (s *StockRepositoryRedisImpl) GetStockCurrentPrice(symbol string) (float64, error) {
+	ctx, cancelFunc := getContext()
+	defer cancelFunc()
+
+	bytes, err := s.redisClient.Get(ctx, fmt.Sprintf("STOCK_GIST_%s", symbol)).Bytes()
+	if err != nil {
+		return 0.0, err
+	}
+
+	gist := model.StockGist{}
+	err = json.Unmarshal(bytes, &gist)
+
+	return gist.CurrentPrice, err
+}
+
 func (s *StockRepositoryRedisImpl) SaveStockGist(gist model.StockGist) error {
 	ctx, cancelFunc := getContext()
 	defer cancelFunc()
