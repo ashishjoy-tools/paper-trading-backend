@@ -1,9 +1,11 @@
 package main
 
 import (
+	"fmt"
 	"github.com/ashishkujoy/paper-trading-backend/internal/repository"
 	"github.com/ashishkujoy/paper-trading-backend/internal/service"
 	"github.com/ashishkujoy/paper-trading-backend/routers"
+	"github.com/ashishkujoy/paper-trading-backend/scheduler"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis/v9"
 	"os"
@@ -11,6 +13,16 @@ import (
 )
 
 func main() {
+
+	ordersScheduler := scheduler.NewOrdersScheduler(os.Getenv("ORDER_EXECUTION_JOB_CRON"))
+	defer ordersScheduler.Shutdown()
+
+	err := ordersScheduler.Schedule()
+	if err != nil {
+		fmt.Printf("Failed to schedule order execution job %v\n", err)
+		os.Exit(3)
+	}
+
 	r := gin.Default()
 	r.Use(routers.CORSMiddleware())
 
